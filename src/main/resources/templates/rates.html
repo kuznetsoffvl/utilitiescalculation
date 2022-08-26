@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rates</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+<a href="/">Главная</a><br>
+<a href="utilities">Виды коммунальных услуг</a><br>
+<a href="rates">Тарифы и формулы расчета</a><br>
+<a href="counters_data">Показания счетчиков и расчет стоимости услуг</a><br>
+
+    <h1>Тарифы и формулы расчета</h1>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Дата</th>
+            <th>Услуга</th>
+            <th>Тариф1</th>
+            <th>Лимит1</th>
+            <th>Тариф2</th>
+            <th>Абонплата</th>
+            <th>Формула</th>
+            <th>Правка</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="iter : ${rates}">
+            <td th:text="${iter.id}"></td>
+            <td th:text="${iter.period}"></td>
+            <td th:text="${iter.utility}"></td>
+            <td th:text="${iter.tariff1}"></td>
+            <td th:text="${iter.limit1}"></td>
+            <td th:text="${iter.tariff2}"></td>
+            <td th:text="${iter.subscriptionFee}"></td>
+            <td th:text="${iter.formula}"></td>
+            <td><a th:href="@{/edit_rate/{id}(id=${iter.id})}">Правка</a></td>
+            <td><a th:href="@{/delete_rate/{id}(id=${iter.id})}">Удалить</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <form action="add_rate" method="post">
+
+        <label for="period">Дата:</label><br>
+        <input id="period" type="date" name="period" >
+        <br>
+        <label for="utility">Услуга:</label><br>
+        <input id="utility" type="text" name="utility">
+        <br>
+        <label for="tariff1">Тариф1:</label><br>
+        <input id="tariff1" type="number" name="tariff1" step="0.000001" value="0.00">
+        <br>
+        <label for="limit1">Лимит1:</label><br>
+        <input id="limit1" type="number" name="limit1" value="0.00">
+        <br>
+        <label for="tariff2">Тариф2:</label><br>
+        <input id="tariff2" type="number" name="tariff2" step="0.000001" value="0.00">
+        <br>
+        <label for="subscriptionFee">Абонплата:</label><br>
+        <input id="subscriptionFee" type="number" name="subscriptionFee" step="0.01" value="0.00">
+        <br>
+        <label for="formula">Формула:</label><br>
+        <textarea id="formula" name="formula"></textarea>
+        <br>
+        <input type="submit" value="Добавить тариф">
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit rate</title>
+</head>
+<body>
+
+<a href="/">Главная</a><br>
+<a href="utilities">Виды коммунальных услуг</a><br>
+<a href="rates">Тарифы и формулы расчета</a><br>
+<a href="counters_data">Показания счетчиков и расчет стоимости услуг</a><br>
+
+  <h1>Редактирование тарифа</h1>
+  <form action="#" th:action="@{/update_rate/{id}(id=${obj.id})}" th:object="${obj}" method="post">
+<!--<form action="#" th:action="@{/update_rate/{id}/{period}(id=${obj.id}, period=${period} )}" th:object="${obj}" method="post">-->
+<!--<form action="#" th:action="@{/update_rate/{id}/{period}(id=${obj.id}, period=${period})}" th:object="${obj}" method="post">-->
+
+      <label for="period">Период:</label><br>
+<!--          <input type="date" th:field="*{period}" id="period" th:value="*{period}">-->
+      <input type="date" th:field="*{period}" id="period">
+<!--      <input type="text" th:field="*{period}" id="period">-->
+      <br>
+
+      <label for="utility">Вид услуги:</label><br>
+      <input type="text" th:field="*{utility}" id="utility">
+      <br>
+
+      <label for="tariff1">Тариф1:</label><br>
+      <input type="number" th:field="*{tariff1}" id="tariff1" step="0.0000001">
+      <br>
+
+      <label for="limit1">Лимит1:</label><br>
+      <input type="number" th:field="*{limit1}" id="limit1" step="0.01">
+      <br>
+
+      <label for="tariff2">Тариф2:</label><br>
+      <input type="number" th:field="*{tariff2}" id="tariff2" step="0.0000001">
+      <br>
+
+      <label for="subscriptionFee">Абонплата:</label><br>
+      <input type="number" th:field="*{subscriptionFee}" id="subscriptionFee" step="0.01">
+      <br>
+
+      <label for="formula">Формула:</label><br>
+      <textarea type="number" th:field="*{formula}" id="formula"></textarea>
+      <br>
+
+      <input type="submit" value="Изменить">
+
+  </form>
+</body>
+</html>

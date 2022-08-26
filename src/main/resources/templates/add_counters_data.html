@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Counter data</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+<a href="/">Главная</a><br>
+<a href="utilities">Виды коммунальных услуг</a><br>
+<a href="rates">Тарифы и формулы расчета</a><br>
+<a href="counters_data">Показания счетчиков и расчет стоимости услуг</a><br>
+
+    <h1>Ввод показаний счетчиков</h1>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+<!--            <th>Дата</th>-->
+            <th>Услуга</th>
+            <th>Текущие показания</th>
+            <th>Потребление</th>
+            <th>Тариф</th>
+            <th>Сумма к начислению</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="iter : ${counterData}">
+            <td th:text="${iter.id}"></td>
+<!--            <td th:text="${iter.period}"></td>-->
+            <td th:text="${iter.utility.id}"></td>
+            <td th:text="${iter.currentMeters}"></td>
+            <td th:text="${iter.consumption}"></td>
+            <td><a th:href="@{/edit_rate/{id}(id=${iter.rate.id})}">Править тариф</a></td>
+            <td th:text="${iter.accruedAmount}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <form action="add_all_counters_data" th:action="@{/add_all_counters_data(id=${counterData.id})}" th:object="${counterData}" method="post">
+
+        <label for="period">Дата:</label><br>
+        <input type="date" th:object="${period}" id="period" name="period" th:value="${period}">
+        <input type="" th:object="${counterData}" id="counterData" name="counterData">
+
+
+        <br><br>
+        <input type="submit" value="Добавить показание счетчиков">
+    </form>
+
+</body>
+</html>

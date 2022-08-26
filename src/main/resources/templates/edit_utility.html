@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit utility</title>
+</head>
+<body>
+
+<a href="/">Главная</a><br>
+<a href="utilities">Виды коммунальных услуг</a><br>
+<a href="rates">Тарифы и формулы расчета</a><br>
+<a href="counters_data">Показания счетчиков и расчет стоимости услуг</a><br>
+
+  <h1>Редактирование вида услуг</h1>
+  <form action="#" th:action="@{/update_utility/{id}(id=${ut.id})}" th:object="${ut}" method="post">
+
+      <label for="name">Вид услуги:</label>
+      <input type="text" th:field="*{name}" id="name">
+
+      <br>
+      <label for="useCounter">Вносить показания счетчика</label>
+      <input type="checkbox" id="useCounter" th:field="*{useCounter}" name="useCounter" th:value="*{useCounter}" th:checked="*{useCounter}"></p>
+      <input type="submit" value="Изменить">
+
+  </form>
+</body>
+</html>

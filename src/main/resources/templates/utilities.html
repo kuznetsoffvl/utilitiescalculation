@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilities</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+<a href="/">Главная</a><br>
+<a href="utilities">Виды коммунальных услуг</a><br>
+<a href="rates">Тарифы и формулы расчета</a><br>
+<a href="counters_data">Показания счетчиков и расчет стоимости услуг</a><br>
+
+    <h1>Виды коммунальных услуг</h1>
+
+    <form action="add_utility" method="post">
+        <label for="utility">Добавить услугу</label>
+        <input id="utility" type="text" name="utility">
+        <input type="submit" value="Добавить">
+    </form>
+    <br>
+    <table>
+        <thead>
+        <tr>
+<!--            <th>ID</th>-->
+            <th>Наименование услуги</th>
+            <th>Использовать счетчик</th>
+            <th>Правка</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ut : ${uts}">
+<!--            <td th:text="${ut.id}"></td>-->
+            <td th:text="${ut.name}"></td>
+            <td th:text="${ut.useCounter}"></td>
+            <td><a th:href="@{/edit_utility/{id}(id=${ut.id})}">Правка</a></td>
+            <td><a th:href="@{/delete_utility/{id}(id=${ut.id})}">Удалить</a></td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
