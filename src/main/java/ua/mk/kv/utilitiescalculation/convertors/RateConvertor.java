@@ -1,5 +1,6 @@
 package ua.mk.kv.utilitiescalculation.convertors;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ua.mk.kv.utilitiescalculation.dto.RateDto;
 import ua.mk.kv.utilitiescalculation.entities.Rate;
@@ -11,8 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class RateConvertor {
-
     private UtilityRepository utilityRepository;
     public RateDto rateToRateDto(Rate rate) {
 
@@ -40,10 +41,10 @@ public class RateConvertor {
         rate.setFormula(        rateDto.getFormula());
         rate.setPeriod(         LocalDate.parse( rateDto.getPeriod()));
 
-//        Optional<Utility> ut = utilityRepository.findById(rateDto.getUtility());
-//        if (ut.isPresent()) {
-//            rate.setUtility(ut.get());
-//        }
+        Optional<Utility> ut = utilityRepository.findById(rateDto.getUtility());
+        if (ut.isPresent()) {
+            rate.setUtility(ut.get());
+        }
         return rate;
     }
 

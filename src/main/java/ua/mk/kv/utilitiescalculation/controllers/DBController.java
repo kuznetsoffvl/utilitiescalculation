@@ -1,8 +1,6 @@
-package ua.mk.kv.utilitiescalculation.conterollers;
+package ua.mk.kv.utilitiescalculation.controllers;
 
 import lombok.AllArgsConstructor;
-import net.bytebuddy.dynamic.DynamicType;
-import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +19,6 @@ import ua.mk.kv.utilitiescalculation.services.ExpressionService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,7 +126,7 @@ public class DBController {
             .limit1(limit1)
             .subscriptionFee(subscriptionFee)
             .formula(formula)
-            //.utility(ut.get().getId())
+            .utility(ut.get().getId())
             .build()
         );
 
@@ -177,30 +174,23 @@ public class DBController {
 
         Rate rate = rateConvertor.rateDtoToRate(rateDto);
 
-        Optional<Utility> utilityOptional = utilityRepository.findById(rateDto.getUtility());
-        if (utilityOptional.isEmpty()) {
-            model.addAttribute("message", "Вида услуг с ID " + rateDto.getUtility() + " не найдено");
-            return "error";
-        }
+//        Optional<Utility> utilityOptional = utilityRepository.findById(rateDto.getUtility());
+//        if (utilityOptional.isEmpty()) {
+//            model.addAttribute("message", "Вида услуг с ID " + rateDto.getUtility() + " не найдено");
+//            return "error";
+//        }
 
-        rate.setUtility(utilityOptional.get());
-
+        //rate.setUtility(utilityOptional.get());
         //LocalDate date = LocalDate.now(); //LocalDate.parse(period, DateTimeFormatter.ISO_DATE);
         //resultRate.setPeriod(date);
 
-        resultRate.setPeriod(rate.getPeriod());
-        resultRate.setTariff1(rate.getTariff1());
-        resultRate.setLimit1(rate.getLimit1());
-        resultRate.setTariff2(rate.getTariff2());
-        resultRate.setSubscriptionFee(rate.getSubscriptionFee());
-        resultRate.setFormula(rate.getFormula());
-        resultRate.setUtility(rate.getUtility());
-
-//        Optional<Utility> ut = utilityRepository.findById(rateDto.getUtility());
-//
-//        if (ut.isPresent()) {
-//            resultRate.setUtility(ut.get());
-//        }
+        resultRate.setPeriod(           rate.getPeriod());
+        resultRate.setTariff1(          rate.getTariff1());
+        resultRate.setLimit1(           rate.getLimit1());
+        resultRate.setTariff2(          rate.getTariff2());
+        resultRate.setSubscriptionFee(  rate.getSubscriptionFee());
+        resultRate.setFormula(          rate.getFormula());
+        //resultRate.setUtility(          utilityOptional.get());
 
         rateRepository.save(resultRate);
 
