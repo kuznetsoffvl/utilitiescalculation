@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit rate</title>
+</head>
+<body>
+
+<a href="/">Главная</a><br>
+<a href="utilities">Виды коммунальных услуг</a><br>
+<a href="rates">Тарифы и формулы расчета</a><br>
+<a href="counters_data">Показания счетчиков и расчет стоимости услуг</a><br>
+
+  <h1>Редактирование показания счетика</h1>
+  <form action="#" th:action="@{/update_counterData/{id}(id=${obj.id})}" th:object="${obj}" method="post">
+
+      <label for="period">Период:</label><br>
+      <input type="date" th:field="*{period}" id="period">
+      <br>
+
+      <label for="utility">Вид услуги:</label><br>
+      <input type="text" th:field="*{utility_id}" id="utility">
+      <br>
+
+      <label for="rate_id">Тариф:</label><br>
+      <input type="text" th:field="*{rate_id}" id="rate_id" disabled>
+      <br>
+
+      <label for="currentMeters">Текущие показания:</label><br>
+      <input type="number" th:field="*{currentMeters}" id="currentMeters" step="0.0000001">
+      <br>
+
+      <label for="consumption">Потребление:</label><br>
+      <input type="number" th:field="*{consumption}" id="consumption" step="0.0000001">
+      <br>
+
+      <label for="accruedAmount">Сумма к начислению:</label><br>
+      <input type="number" th:field="*{accruedAmount}" id="accruedAmount" step="0.01">
+      <br>
+
+
+      <input type="submit" value="Изменить">
+
+  </form>
+</body>
+</html>

@@ -17,10 +17,17 @@ public class ExpressionService {
     public double calculate() {
 
         int useTariff1 = 1;
-        if (consumption > rate.getLimit1()) {
+        if (rate.getLimit1() != null && consumption > rate.getLimit1()) {
             useTariff1 = 0;
         }
-        Expression expression = new ExpressionBuilder(rate.getFormula())
+
+        String strExpression = rate.getFormula(); // ? "0" : rate.getFormula();
+        if (strExpression.isEmpty()) {
+            return 0.0;
+        }
+
+
+        Expression expression = new ExpressionBuilder(strExpression)
                 .variables("tariff1", "tariff2", "subscriptionFee", "consumption", "useTariff1")
                 .build()
                 .setVariable("tariff1", rate.getTariff1())

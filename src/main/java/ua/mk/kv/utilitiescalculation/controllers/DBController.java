@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ua.mk.kv.utilitiescalculation.convertors.CounterDataConvertor;
 import ua.mk.kv.utilitiescalculation.convertors.RateConvertor;
+import ua.mk.kv.utilitiescalculation.convertors.UtilityConvertor;
+import ua.mk.kv.utilitiescalculation.dto.CounterDataDto;
 import ua.mk.kv.utilitiescalculation.dto.RateDto;
+import ua.mk.kv.utilitiescalculation.dto.UtilityDto;
 import ua.mk.kv.utilitiescalculation.entities.CounterData;
 import ua.mk.kv.utilitiescalculation.entities.Rate;
 import ua.mk.kv.utilitiescalculation.entities.Utility;
@@ -30,11 +34,13 @@ public class DBController {
     private RateRepository rateRepository;
     private CounterDataRepository counterDataRepository;
     private RateConvertor rateConvertor;
+    private UtilityConvertor utilityConvertor;
+    private CounterDataConvertor counterDataConvertor;
 
     @GetMapping("/utilities")
     public String showAllUtilities(Model model){
 
-        List<Utility> utilities = utilityRepository.findAll();
+        List<UtilityDto> utilities = utilityRepository.findAll().stream().map(utilityConvertor::utilityToUtilityDto).toList();
 
         model.addAttribute("uts", utilities);
         return "utilities";
@@ -62,7 +68,7 @@ public class DBController {
             model.addAttribute("message", "Вида услуг с ID " + id + " не найдено");
             return "error";
         } else {
-            model.addAttribute("ut", utility.get());
+            model.addAttribute("ut", utilityConvertor.utilityToUtilityDto(utility.get()));
             return "edit_utility";
         }
     }
@@ -101,23 +107,12 @@ public class DBController {
                           @RequestParam String formula,
                           Model model
     ) {
-//        Rate rate = new Rate();
+
         Optional<Utility> ut = utilityRepository.findById(utility);
         if (ut.isEmpty()) {
             model.addAttribute("message", "Вида услуг с ID " + utility + " не найдено");
             return "error";
         }
-//
-//        LocalDate localDate = LocalDate.parse(period, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//
-//        rate.setUtility(ut.get());
-//        rate.setPeriod(localDate);
-//        rate.setTariff1(tariff1);
-//        rate.setLimit1(limit1);
-//        rate.setTariff2(tariff2);
-//        rate.setSubscriptionFee(subscriptionFee);
-//        rate.setFormula(formula);
-//        rateRepository.save(rate);
 
         Rate rate = rateConvertor.rateDtoToRate(RateDto.builder()
             .period(period)
@@ -149,15 +144,12 @@ public class DBController {
             return "error";
         }
         model.addAttribute("obj", rateConvertor.rateToRateDto(optionalRate.get()));
-        //model.addAttribute("period", optionalRate.get().getPeriod().format(DateTimeFormatter.ISO_DATE));
         return "edit_rate";
     }
 
     //@PostMapping("/update_rate/{id}/{period}")
     @PostMapping("/update_rate/{id}")
     public String updateRate(
-            //@RequestParam("period") String period,
-            //@PathVariable("period") String period,
             @PathVariable("id") int id,
             RateDto rateDto,
             Model model
@@ -173,24 +165,12 @@ public class DBController {
         Rate resultRate = optionalRate.get();
 
         Rate rate = rateConvertor.rateDtoToRate(rateDto);
-
-//        Optional<Utility> utilityOptional = utilityRepository.findById(rateDto.getUtility());
-//        if (utilityOptional.isEmpty()) {
-//            model.addAttribute("message", "Вида услуг с ID " + rateDto.getUtility() + " не найдено");
-//            return "error";
-//        }
-
-        //rate.setUtility(utilityOptional.get());
-        //LocalDate date = LocalDate.now(); //LocalDate.parse(period, DateTimeFormatter.ISO_DATE);
-        //resultRate.setPeriod(date);
-
         resultRate.setPeriod(           rate.getPeriod());
         resultRate.setTariff1(          rate.getTariff1());
         resultRate.setLimit1(           rate.getLimit1());
         resultRate.setTariff2(          rate.getTariff2());
         resultRate.setSubscriptionFee(  rate.getSubscriptionFee());
         resultRate.setFormula(          rate.getFormula());
-        //resultRate.setUtility(          utilityOptional.get());
 
         rateRepository.save(resultRate);
 
@@ -199,14 +179,21 @@ public class DBController {
 
     @GetMapping("/counters_data")
     public String showAllCountersData(Model model){
-        List<CounterData> counterData = counterDataRepository.findAll();
-        model.addAttribute("counterData", counterData);
+        List<CounterDataDto> counterDataDto = counterDataRepository.findAll()
+                .stream()
+                .map(counterDataConvertor::counterDataToCounterDataDto)
+                .sorted((o1, o2) ->
+                        o1.getPeriod() != o2.getPeriod()
+                            ? o1.getPeriod().compareTo(o2.getPeriod())
+                            : o1.getUtility_id().compareTo(o2.getUtility_id()) )
+                .toList();
+
+        model.addAttribute("counterData", counterDataDto);
         LocalDate date = LocalDate.now();
-        date = LocalDate.of(2021, 12, 1);
-        if (counterData.size() > 0) {
-            //date = counterData.get(counterData.size() - 1).getPeriod().plusMonths(1);
-            date = LocalDate.of(2021, 12, 1);
-        }
+        date = LocalDate.of(2022, 5, 1);
+//        if (counterData.size() > 0) {
+//            date = counterData.get(counterData.size() - 1).getPeriod().plusMonths(1);
+//        }
         model.addAttribute("period",
                 date.format(DateTimeFormatter.ISO_DATE));
         return "counters_data";
@@ -241,10 +228,10 @@ public class DBController {
         Double consumption = currentMeters
                 - (previousCounterData.isEmpty() ? 0.0 : previousCounterData.get().getCurrentMeters());
 
-        Optional<Rate> actualRateFromDB = rateRepository.findActualRate(
+        Optional<Rate> optionalRate = rateRepository.findActualRate(
                 localDate, ut.get().getId());
 
-        Rate actualRate = actualRateFromDB.isEmpty() ? new Rate() : actualRateFromDB.get();
+        Rate actualRate = optionalRate.isEmpty() ? new Rate() : optionalRate.get();
 
         ExpressionService exps = new ExpressionService(actualRate, consumption);
         Double accruedAmount = exps.calculate();
@@ -260,4 +247,49 @@ public class DBController {
         return "redirect:/counters_data";
     }
 
+    @GetMapping("/edit_counterData/{id}")
+    public String showUpdateCounterDataPage(@PathVariable("id") int id, Model model){
+        Optional<CounterData> counterDataOptional = counterDataRepository.findById(id);
+        if(counterDataOptional.isEmpty()){
+            model.addAttribute("message", "Показаний счетчика с ID " + id + " не найдено");
+            return "error";
+        }
+        model.addAttribute("obj", counterDataConvertor.counterDataToCounterDataDto(counterDataOptional.get()));
+        return "edit_counterData";
+    }
+
+    @PostMapping("/update_counterData/{id}")
+    public String updateCounterData(
+            @PathVariable("id") int id,
+            CounterDataDto counterDataDto,
+            Model model
+    ){
+
+        Optional<CounterData> counterDataOptional = counterDataRepository.findById(id);
+        if(counterDataOptional.isEmpty()){
+            model.addAttribute("message", "Тарифа с ID " + id + " не найдено");
+            return "error";
+        }
+
+        Optional<Utility> optionalUtility = utilityRepository.findById(counterDataDto.getUtility_id());
+        if(optionalUtility.isEmpty()){
+            model.addAttribute("message", "Вида услуг с ID " + counterDataDto.getUtility_id() + " не найдено");
+            return "error";
+        }
+
+        CounterData counterData = counterDataOptional.get();
+
+        CounterData resultCounterData = counterDataConvertor.counterDataDtoToCounterData(counterDataDto);
+        resultCounterData.setId(counterData.getId());
+        resultCounterData.setPeriod(counterData.getPeriod());
+        resultCounterData.setUtility(optionalUtility.get());
+        resultCounterData.setRate(counterData.getRate());
+        resultCounterData.setCurrentMeters(counterData.getCurrentMeters());
+        resultCounterData.setAccruedAmount(counterDataDto.getAccruedAmount());
+        resultCounterData.setConsumption(counterDataDto.getConsumption());
+
+        counterDataRepository.save(resultCounterData);
+
+        return "redirect:/counters_data";
+    }
 }

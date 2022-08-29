@@ -7,7 +7,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "rate")
-public class Rate implements Comparable {
+public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -17,19 +17,19 @@ public class Rate implements Comparable {
     private LocalDate period;
 
     @Column(name = "tariff1")
-    private Double tariff1;
+    private Double tariff1 = 0.0;
 
     @Column(name = "limit1")
-    private Double limit1;
+    private Double limit1 = 0.0;
 
     @Column(name = "tariff2")
-    private Double tariff2;
+    private Double tariff2 = 0.0;
 
     @Column(name = "subscription_fee")
-    private Double subscriptionFee;
+    private Double subscriptionFee = 0.0;
 
     @Column(name = "formula", length = 100)
-    private String formula;
+    private String formula = "";
 
     @ManyToOne
     @JoinColumn(name = "utility_id")
@@ -113,14 +113,5 @@ public class Rate implements Comparable {
         this.id = id;
     }
 
-    @Override
-    public int compareTo(Object o) {
-        if (this.getClass() != o.getClass()) return getClass().getName().compareTo(o.getClass().getName());
-        Rate rate = (Rate) o;
-        int v = utility.getId().compareTo(rate.utility.getId());
-        if (v != 0) return v;
-        v = period.compareTo(rate.period);
-        return v;
-    }
 
 }

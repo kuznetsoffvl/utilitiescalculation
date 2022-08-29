@@ -23,7 +23,6 @@
     <table>
         <thead>
         <tr>
-<!--            <th>ID</th>-->
             <th>Наименование услуги</th>
             <th>Использовать счетчик</th>
             <th>Правка</th>
@@ -32,7 +31,6 @@
         </thead>
         <tbody>
         <tr th:each="ut : ${uts}">
-<!--            <td th:text="${ut.id}"></td>-->
             <td th:text="${ut.name}"></td>
             <td th:text="${ut.useCounter}"></td>
             <td><a th:href="@{/edit_utility/{id}(id=${ut.id})}">Правка</a></td>

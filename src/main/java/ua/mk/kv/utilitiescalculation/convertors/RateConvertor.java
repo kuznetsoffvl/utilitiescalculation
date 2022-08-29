@@ -42,10 +42,9 @@ public class RateConvertor {
         rate.setPeriod(         LocalDate.parse( rateDto.getPeriod()));
 
         Optional<Utility> ut = utilityRepository.findById(rateDto.getUtility());
-        if (ut.isPresent()) {
-            rate.setUtility(ut.get());
-        }
+
+        ut.ifPresent(rate::setUtility);
+
         return rate;
     }
-
 }

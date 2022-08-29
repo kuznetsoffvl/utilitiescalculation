@@ -14,6 +14,22 @@
 
     <h1>Показания счетчиков</h1>
     <br>
+    <form action="add_counterData" method="post">
+
+        <label for="period">Дата:</label>
+        <input type="date" th:object="${period}" id="period" name="period" th:value="${period}">
+        <br>
+        <label for="utility">Услуга:</label>
+        <input id="utility" type="text" name="utility">
+        <br>
+        <label for="currentMeters">Текущие показания:</label>
+        <input id="currentMeters" type="number" name="currentMeters" value="0.00">
+        <br>
+        <br>
+        <input type="submit" value="Добавить показание счетчика">
+    </form>
+    <br>
+
     <table>
         <thead>
         <tr>
@@ -32,10 +48,10 @@
         <tr th:each="iter : ${counterData}">
             <td th:text="${iter.id}"></td>
             <td th:text="${iter.period}"></td>
-            <td th:text="${iter.utility.id}"></td>
-            <td th:text="${iter.currentMeters}"></td>
+            <td th:text="${iter.utility_id}"></td>
+            <td th:text="${iter.currentMeters}" ></td>
             <td th:text="${iter.consumption}"></td>
-            <td><a th:href="@{/edit_rate/{id}(id=${iter.rate.id})}">Править тариф</a></td>
+            <td><a th:href="@{/edit_rate/{id}(id=${iter.rate_id})}">Править тариф</a></td>
             <td th:text="${iter.accruedAmount}"></td>
 
             <td><a th:href="@{/edit_counterData/{id}(id=${iter.id})}">Правка</a></td>
@@ -45,27 +61,6 @@
         </tbody>
     </table>
     <br>
-    <form action="add_counterData" method="post">
-
-        <label for="period">Дата:</label><br>
-        <input type="date" th:object="${period}" id="period" name="period" th:value="${period}">
-        <br>
-        <label for="utility">Услуга:</label><br>
-        <input id="utility" type="text" name="utility">
-        <br>
-        <label for="currentMeters">Текущие показания:</label><br>
-        <input id="currentMeters" type="number" name="currentMeters" value="0.00">
-<!--        <br>-->
-<!--        <label for="consumption">Потребление:</label><br>-->
-<!--        <input id="consumption" type="number" name="consumption" value="0.00">-->
-<!--        <br>-->
-<!--        <label for="accruedAmount">Сумма к начислению:</label><br>-->
-<!--        <input id="accruedAmount" type="number" name="accruedAmount" step="0.01" value="0.00">-->
-
-        <br>
-        <br>
-        <input type="submit" value="Добавить показание счетчика">
-    </form>
 
 </body>
 </html>

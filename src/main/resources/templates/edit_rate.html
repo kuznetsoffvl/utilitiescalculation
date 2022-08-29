@@ -13,13 +13,9 @@
 
   <h1>Редактирование тарифа</h1>
   <form action="#" th:action="@{/update_rate/{id}(id=${obj.id})}" th:object="${obj}" method="post">
-<!--<form action="#" th:action="@{/update_rate/{id}/{period}(id=${obj.id}, period=${period} )}" th:object="${obj}" method="post">-->
-<!--<form action="#" th:action="@{/update_rate/{id}/{period}(id=${obj.id}, period=${period})}" th:object="${obj}" method="post">-->
 
       <label for="period">Период:</label><br>
-<!--          <input type="date" th:field="*{period}" id="period" th:value="*{period}">-->
       <input type="date" th:field="*{period}" id="period">
-<!--      <input type="text" th:field="*{period}" id="period">-->
       <br>
 
       <label for="utility">Вид услуги:</label><br>

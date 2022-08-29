@@ -21,14 +21,10 @@ public interface CounterDataRepository extends JpaRepository<CounterData, Intege
             limit 1
     """,
             nativeQuery = true)
-    Optional<CounterData> findPreviousCounterData(
-            @Param("date") LocalDate date, @Param("utility_id") String utility_id);
+    Optional<CounterData> findPreviousCounterData(@Param("date") LocalDate date, @Param("utility_id") String utility_id);
 
 
-    @Query(value = """
-        select * 
-        from counter_data 
-        order by period, utility_id
-    """, nativeQuery = true)
+    //@Query(value = "select * from counter_data order by period, utility_id ", nativeQuery = true)
+    @Query(value = "select * from counter_data", nativeQuery = true)
     List<CounterData> findAll();
 }
